@@ -18,18 +18,40 @@ public class PetRepository extends HashMapRepository<Pet, Long> {
     }
 
     @Override
-    public <S extends Pet> S save(S pet) {
-        if (pet.getId() != null && pet.getId() > sequenceId) {
-            sequenceId = pet.getId() + 1;
-        }
-        if (pet.getId() == null) {
-            pet.setId(sequenceId);
-            sequenceId += 1;
-        }
-        return super.save(pet);
-    }
 
-    public List<Pet> findPetsByStatus(List<Pet.StatusEnum> statusList) {
+        public <S extends Pet> S save(S pet) {
+
+            if (pet.getId() != null && pet.getId() > sequenceId) {
+
+                sequenceId = pet.getId() + 1;
+
+            }
+
+            if (pet.getId() == null) {
+
+                pet.setId(sequenceId);
+
+                sequenceId += 1;
+
+            }
+
+            return super.save(pet);
+
+        }
+
+    
+
+        @Override
+
+        public void deleteAllById(Iterable<? extends Long> ids) {
+
+            ids.forEach(this::deleteById);
+
+        }
+
+    
+
+        public List<Pet> findPetsByStatus(List<Pet.StatusEnum> statusList) {
         return entities.values().stream()
                 .filter(entity -> entity.getStatus() != null)
                 .filter(entity -> statusList.contains(entity.getStatus()))
